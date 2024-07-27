@@ -4,9 +4,6 @@ pipeline {
     environment {
         GITHUB_ORG = 'ticket-booking-vg'
         CONTAINER_REGISTRY = "ghcr.io/${env.GITHUB_ORG}/"
-        ARTIFACT_ID = 'TEST-ID'
-        JAR_NAME = "TEST-JAR"
-        IMAGE_NAME = "TEST-IMAGE"
     }
 
     stages {
@@ -20,8 +17,9 @@ pipeline {
                     // Set environment variables dynamically
                     env.ARTIFACT_ID = artifactId
                     env.JAR_NAME = "${env.ARTIFACT_ID}-${env.BUILD_NUMBER}"
-                    env.IMAGE_NAME = "${env.CONTAINER_REGISTRY}${env.ARTIFACT_ID}"
+                    env.IMAGE_NAME = "${CONTAINER_REGISTRY}${env.ARTIFACT_ID}"
                 }
+                sh "echo ARTIFACT_ID: ${env.ARTIFACT_ID}, JAR_NAME: ${JAR_NAME}, IMAGE_NAME: ${IMAGE_NAME}"
             }
         }
 
@@ -39,7 +37,7 @@ pipeline {
 
         stage('Publishing Container Image') {
             steps {
-                sh "echo Publishing Container Image to: ${env.CONTAINER_REGISTRY}"
+                sh "echo Publishing Container Image to: ${CONTAINER_REGISTRY}"
             }
         }
     }
