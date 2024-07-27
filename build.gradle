@@ -2,7 +2,25 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.8'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'application'
+	id("org.barfuin.gradle.taskinfo") version "2.2.0"
 }
+
+project.plugins.each{
+	println it
+}
+
+project.tasks.register("simpleTask") {
+	doFirst() {
+		println 'Hello User'
+	}
+
+	doLast() {
+		println 'GoodBye!! User'
+	}
+}
+
+build.dependsOn simpleTask
 
 group = 'com.ticket.booking'
 version = '0.0.1-SNAPSHOT'
@@ -36,6 +54,16 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+application {
+	mainClass = 'com.ticket.booking.platform_backend.PlatformBackendApplication'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task printArtifactId {
+	doLast {
+		println project.name // Assuming the artifact ID is the project name
+	}
 }
