@@ -13,12 +13,12 @@ pipeline {
 
         stage('Setting env variables from gradle') {
                     steps {
-                        def result = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
-
-                                            // Set the artifact ID as an environment variable
-                        environment.ARTIFACT_ID = result
-                        environment.JAR_NAME = '${ARTIFACT_ID}-${BUILD_NUMBER}'
-                        environment.IMAGE_NAME = '${CONTAINER_REGISTRY}${ARTIFACT_ID}'
+                        script {
+                            def result = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
+                            environment.ARTIFACT_ID = result
+                            environment.JAR_NAME = '${ARTIFACT_ID}-${BUILD_NUMBER}'
+                            environment.IMAGE_NAME = '${CONTAINER_REGISTRY}${ARTIFACT_ID}'
+                        }
 
                     }
                 }
