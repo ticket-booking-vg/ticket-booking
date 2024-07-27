@@ -10,8 +10,9 @@ pipeline {
         stage('Setting env variables from gradle') {
             steps {
                 script {
-                    // Get the artifact ID from Gradle
-                    def artifactId = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
+                    // Get the artifact ID from Gradle and filter the output
+                    def result = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
+                    def artifactId = result.split('\n').find { it ==~ /^[a-zA-Z0-9\-_]+$/ }
 
                     // Set Groovy variables
                     def jarName = "${artifactId}-${env.BUILD_NUMBER}"
