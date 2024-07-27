@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GITHUB_ORG = 'ticket-booking-vg'
-        CONTAINER_REGISTRY = 'ghcr.io/${GITHUB_ORG}/'
+        CONTAINER_REGISTRY = "ghcr.io/${env.GITHUB_ORG}/"
         ARTIFACT_ID = 'TEST-ID'
         JAR_NAME = "TEST-JAR"
         IMAGE_NAME = "TEST-IMAGE"
@@ -12,34 +12,35 @@ pipeline {
     stages {
 
         stage('Setting env variables from gradle') {
-                    steps {
-                        script {
-                            def result = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
-                            environment.ARTIFACT_ID = result
-                            environment.JAR_NAME = '${ARTIFACT_ID}-${BUILD_NUMBER}'
-                            environment.IMAGE_NAME = '${CONTAINER_REGISTRY}${ARTIFACT_ID}'
-                        }
+            steps {
+                script {
+                    // Get the artifact ID from Gradle
+                    def artifactId = sh(script: './gradlew printArtifactId', returnStdout: true).trim()
 
-                    }
+                    // Set environment variables dynamically
+                    env.ARTIFACT_ID = artifactId
+                    env.JAR_NAME = "${env.ARTIFACT_ID}-${env.BUILD_NUMBER}"
+                    env.IMAGE_NAME = "${env.CONTAINER_REGISTRY}${env.ARTIFACT_ID}"
                 }
+            }
+        }
 
         stage('Build Application') {
             steps {
-                sh 'echo Performing Gradle build: ${ARTIFACT_ID}'
+                sh "echo Performing Gradle build: ${env.ARTIFACT_ID}"
             }
         }
 
         stage('Build Container Image') {
-                    steps {
-                        sh 'echo Building Container Image: ${IMAGE_NAME}'
-                    }
-                }
+            steps {
+                sh "echo Building Container Image: ${env.IMAGE_NAME}"
+            }
+        }
 
         stage('Publishing Container Image') {
-                    steps {
-                        sh 'echo Publishing Container Image to: ${CONTAINER_REGISTRY}'
-                    }
-                }
-
+            steps {
+                sh "echo Publishing Container Image to: ${env.CONTAINER_REGISTRY}"
+            }
+        }
     }
 }
