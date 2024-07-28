@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh "echo Performing Gradle build: ${env.ACTUAL_ARTIFACT_ID}"
-                    sh "./gradlew -DjarName = ${env.ACTUAL_JAR_NAME} clean verify"
+                    sh "./gradlew -DjarName=${env.ACTUAL_JAR_NAME} clean verify"
                 }
             }
         }
