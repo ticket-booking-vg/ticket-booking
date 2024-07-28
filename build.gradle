@@ -63,7 +63,7 @@ tasks.named('test') {
 }
 
 jar {
-	archiveFileName.set(project.jarName)
+	archiveFileName.set(System.getProperty("jarName"))
 }
 
 task printArtifactId {
